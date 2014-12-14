@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PinnedHeaderItemDecoration</string>
+    <string name="menu_add_section_label">Add Section</string>
+    <string name="menu_add_section_label_condensed">Add</string>
+    <string name="button_add_data">Add data</string>
+
+</resources>
