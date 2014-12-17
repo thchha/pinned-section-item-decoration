@@ -44,15 +44,15 @@ public class ExampleRecyclerAdapter extends RecyclerView.Adapter<ExampleRecycler
 
             switch (viewType) {
                 case Item.TYPE_SECTION:
-                    root = inflater.inflate(R.layout.adapter_exmample_section, parent, false);
+                    root = inflater.inflate(R.layout.adapter_example_section, parent, false);
                     return new SectionViewHolder(root, viewType);
 
                 case Item.TYPE_DATA:
-                    root = inflater.inflate(R.layout.adapter_exmample_data, parent, false);
+                    root = inflater.inflate(R.layout.adapter_example_data, parent, false);
                     return new DataViewHolder(root, viewType);
 
                 case Item.TYPE_FOOTER:
-                    root = inflater.inflate(R.layout.adapter_exmample_footer, parent, false);
+                    root = inflater.inflate(R.layout.adapter_example_footer, parent, false);
                     return new FooterViewHolder(root, viewType);
 
                 default:
