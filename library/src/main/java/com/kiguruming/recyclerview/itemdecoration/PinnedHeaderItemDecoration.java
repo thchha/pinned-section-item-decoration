@@ -90,7 +90,7 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
         if (headerPosition >= 0 && mHeaderPosition != headerPosition) {
             mHeaderPosition = headerPosition;
             final int viewType = mAdapter.getItemViewType(headerPosition);
-            // request new view using recycled view, if such
+
             final RecyclerView.ViewHolder pinnedViewHolder = mAdapter.createViewHolder(parent, viewType);
             mAdapter.bindViewHolder(pinnedViewHolder, headerPosition);
             mPinnedHeaderView = pinnedViewHolder.itemView;
