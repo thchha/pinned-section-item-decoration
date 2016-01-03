@@ -147,6 +147,9 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
 
     private boolean isHeaderView(RecyclerView parent, View v) {
         final int position = parent.getChildPosition(v);
+        if (position == RecyclerView.NO_POSITION) {
+            return false;
+        }
         final int viewType = mAdapter.getItemViewType(position);
 
         return isPinnedViewType(viewType);
