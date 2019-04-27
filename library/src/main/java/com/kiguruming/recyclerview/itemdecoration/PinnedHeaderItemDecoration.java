@@ -116,7 +116,7 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
 
             // measure & layout
             final int ws = View.MeasureSpec.makeMeasureSpec(parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight(), View.MeasureSpec.EXACTLY);
-            final int hs = View.MeasureSpec.makeMeasureSpec(heightSize, heightMode);
+            final int hs = View.MeasureSpec.makeMeasureSpec(heightSize - 1, heightMode);
             mPinnedHeaderView.measure(ws, hs);
             mPinnedHeaderView.layout(0, 0, mPinnedHeaderView.getMeasuredWidth(), mPinnedHeaderView.getMeasuredHeight());
         }
