@@ -3,6 +3,9 @@ pinned-section-item-decoration
 
 Pinned(sticky) section header decoration for Android RecyclerView.
 
+***   call setShadow(integer) for using animated drop-shadow on the pinned item.
+      you can adjust the alpha aswell, where 255 is the max value.
+
 Original code for ListView from https://github.com/beworker/pinned-section-listview.
 
 LICENSE
