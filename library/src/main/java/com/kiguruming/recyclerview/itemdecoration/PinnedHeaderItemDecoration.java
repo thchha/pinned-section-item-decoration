@@ -36,6 +36,16 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
     private int mPinnedHeaderTop;
     private Rect mClipBounds = new Rect();
 
+    private Paint mShadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private int mAlpha = 120;
+    private Rect mShadowRect = new Rect();
+    private int mShadowSize = 0;
+
+    /*
+    Used to end the gradient before the bottom of the rectangle to draw.
+     */
+    private float mShadowSizeOffset;
+    
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         createPinnedHeader(parent);
@@ -68,6 +78,8 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         if (mPinnedHeaderView != null) {
             c.save();
+            
+			if (mShadowSize > 0) drawShadow(c, parent);
 
             mClipBounds.top = 0;
             c.clipRect(mClipBounds);
@@ -76,6 +88,82 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
 
             c.restore();
         }
+    }
+
+    private void drawShadow(Canvas c, RecyclerView parent) {
+        if (mAdapter.getItemCount() > mHeaderPosition) {
+            final int yPositionWithinHeader = mPinnedHeaderView.getTop() + mPinnedHeaderView.getHeight();
+            final int xCenterCanvas = c.getWidth() >> 1;
+
+            View child = parent.findChildViewUnder(xCenterCanvas, yPositionWithinHeader);
+            if (child != null) {
+                int childAdapterPosition = parent.getChildAdapterPosition(child);
+
+                int viewType = mAdapter.getItemViewType(childAdapterPosition);
+                if (!((PinnedHeaderAdapter) mAdapter).isPinnedViewType(viewType)){
+                    if (childAdapterPosition > mHeaderPosition){
+                        // the Decorator hides an item.
+                        int shadowSize = mShadowSize;
+
+                        // check, if an pinned item is incoming
+                        if (mAdapter.getItemCount() > (childAdapterPosition+1)) {
+                            View nextChild = parent.findChildViewUnder(xCenterCanvas, yPositionWithinHeader+mShadowSize);
+                            if (nextChild != null) {
+                                final int nextChildPosition = parent.getChildAdapterPosition(nextChild);
+                                int nextViewType = mAdapter.getItemViewType(nextChildPosition);
+                                if (((PinnedHeaderAdapter) mAdapter).isPinnedViewType(nextViewType)){
+                                    int maxShadowSize = nextChild.getTop() - mPinnedHeaderView.getHeight();
+                                    if (maxShadowSize <= mShadowSize) {
+                                        shadowSize = maxShadowSize;
+                                        mShadowPaint.setAlpha(mAlpha / mShadowSize * maxShadowSize);
+                                    }
+                                }
+                            }
+                        }
+
+                        // if we are the first child after the decorator, we will fade the shadow in
+                        if (childAdapterPosition-1 == mHeaderPosition) {
+                            int maxShadowSizeGrowing = mPinnedHeaderView.getHeight() - child.getTop();
+                            if (maxShadowSizeGrowing <= mShadowSize && maxShadowSizeGrowing >= 0) {
+                                mShadowPaint.setAlpha(mAlpha / mShadowSize * maxShadowSizeGrowing);
+                                shadowSize = Math.min(maxShadowSizeGrowing+1, mShadowSize);
+                            }
+                        }
+
+
+                        // set the rect for the shadow to be in
+                        if (mShadowRect.isEmpty()){
+                            mShadowRect.left = mPinnedHeaderView.getLeft();
+                            mShadowRect.top = mClipBounds.top;
+                            mShadowRect.right = mPinnedHeaderView.getRight();
+                        }
+
+                        // size needs to be set every time.
+                        mShadowRect.bottom = mShadowRect.top + shadowSize;
+
+                        // fast scrolling can skip the necessary alpha
+                        if (shadowSize == mShadowSize){
+                            mShadowPaint.setAlpha(mAlpha);
+                        }
+
+                        float xPos = 1f;
+                        // TODO: update the gradient and stop reallocating
+                        Shader shadowGradient = new LinearGradient(
+                                xPos, mShadowRect.top-mShadowSize,
+                                xPos, mShadowRect.bottom-mShadowSizeOffset, Color.BLACK, Color.TRANSPARENT, Shader.TileMode.CLAMP);
+
+                        mShadowPaint.setShader(shadowGradient);
+
+                        c.drawRect(mShadowRect, mShadowPaint);
+                    }
+                }
+            }
+        }
+    }
+
+    private void setShadow(int size) {
+        mShadowSize = size;
+        mShadowSizeOffset = size*0.2f;
     }
 
     private void createPinnedHeader(RecyclerView parent) {
