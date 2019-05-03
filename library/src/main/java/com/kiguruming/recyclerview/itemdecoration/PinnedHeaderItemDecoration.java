@@ -44,7 +44,7 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
             // check overlap section view.
             //TODO support only vertical header currently.
             final int headerEndAt = mPinnedHeaderView.getTop() + mPinnedHeaderView.getHeight();
-            final View v = parent.findChildViewUnder(c.getWidth() / 2, headerEndAt + 1);
+            final View v = parent.findChildViewUnder(c.getWidth() / 2, headerEndAt);
 
             if (isHeaderView(parent, v)) {
                 mPinnedHeaderTop = v.getTop() - mPinnedHeaderView.getHeight();
