@@ -34,13 +34,15 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
     Map<Integer, Boolean> mPinnedViewTypes = new HashMap<Integer, Boolean>();
 
     private int mPinnedHeaderTop;
-    private Rect mClipBounds;
+    private Rect mClipBounds = new Rect();
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         createPinnedHeader(parent);
 
         if (mPinnedHeaderView != null) {
+			c.save();
+			
             // check overlap section view.
             //TODO support only vertical header currently.
             final int headerEndAt = mPinnedHeaderView.getTop() + mPinnedHeaderView.getHeight();
@@ -52,9 +54,13 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
                 mPinnedHeaderTop = 0;
             }
 
-            mClipBounds = c.getClipBounds();
-            mClipBounds.top = mPinnedHeaderTop + mPinnedHeaderView.getHeight();
-            c.clipRect(mClipBounds);
+			if (mClipBounds.isEmpty() {
+			    mClipBounds = c.getClipBounds();
+                mClipBounds.top = mPinnedHeaderTop + mPinnedHeaderView.getHeight();
+                c.clipRect(mClipBounds);
+			}
+			
+			c.restore();
         }
     }
 
@@ -64,7 +70,7 @@ public class PinnedHeaderItemDecoration extends RecyclerView.ItemDecoration {
             c.save();
 
             mClipBounds.top = 0;
-            c.clipRect(mClipBounds, Region.Op.UNION);
+            c.clipRect(mClipBounds);
             c.translate(0, mPinnedHeaderTop);
             mPinnedHeaderView.draw(c);
 
